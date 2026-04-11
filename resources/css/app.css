@@ -1,4 +1,4 @@
-@import "tailwindcss";
+
 
 html {
     font-size: 120%;
@@ -10,3 +10,9 @@ body {
     color: #f0ece0;
     font-family: 'Rajdhani', sans-serif;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+

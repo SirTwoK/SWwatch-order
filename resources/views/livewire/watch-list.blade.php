@@ -1,6 +1,54 @@
 <div>
     <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="flex items-center justify-between flex-wrap gap-6 mb-8 pb-6 border-b border-[#1a2030]">
+            @auth
+<div class="relative flex items-center gap-3">
+
+    {{-- User badge --}}
+    <button
+        wire:click="toggleUserMenu"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[#1a2030]
+               bg-[#0a0c10] hover:border-[#2a3545] transition-all duration-150">
+
+        <div class="w-2 h-2 rounded-full bg-[#c9a227] shadow-[0_0_8px_rgba(201,162,39,0.6)]"></div>
+
+        <span class="text-xs tracking-[1.5px] uppercase text-[#8a9aaa]">
+            {{ auth()->user()->name ?? auth()->user()->email }}
+        </span>
+
+        {{-- arrow --}}
+        <svg class="w-3 h-3 text-[#556070]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    {{-- Dropdown --}}
+    @if($userMenuOpen)
+        {{-- click outside blocker --}}
+        <div
+            wire:click="closeUserMenu"
+            class="fixed inset-0 z-10"></div>
+
+        <div class="absolute right-0 top-10 z-20 w-44 bg-[#0a0c10]
+                    border border-[#1a2030] rounded-md overflow-hidden shadow-lg">
+
+            {{-- logout --}}
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button
+                    class="w-full text-left px-4 py-2 text-xs uppercase tracking-[2px]
+                           text-[#556070] hover:bg-[#1a2030] hover:text-[#c9a227]
+                           transition-colors">
+                    Logout
+                </button>
+            </form>
+
+        </div>
+    @endif
+
+</div>
+@endauth
             <div>
                 <h1 class="font-['Exo_2'] text-3xl font-extrabold tracking-[4px] uppercase text-[#f0ece0]">★ Star Wars</h1>
                 <p class="text-xs tracking-[2px] uppercase text-[#556070] mt-1">Chronological Watch Order</p>

@@ -20,6 +20,11 @@ class WatchEntry extends Model
         return $h > 0 ? ($m > 0 ? "{$h}h {$m}m" : "{$h}h") : "{$m}m";
     }
 
+    public function userState()
+    {
+        return $this->hasOne(UserWatchState::class);
+    }
+
     public function scopeOrdered($query)
     {
         return $query->orderBy('order');

@@ -9,7 +9,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        DB::table('user_watch_states')->truncate();
         DB::table('watch_entries')->truncate();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $entries = [
 
