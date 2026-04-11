@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+html {
+    font-size: 120%;
+}
+
+body {
+    background: #0d1117;
+    min-height: 100vh;
+    color: #f0ece0;
+    font-family: 'Rajdhani', sans-serif;
+}

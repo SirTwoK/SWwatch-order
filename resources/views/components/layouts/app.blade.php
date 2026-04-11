@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars Watchlist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+    @fluxStyles
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="sw-body">
+    {{ $slot }}
+    @fluxScripts
+    @livewireScripts
+</body>
+</html>
