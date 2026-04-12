@@ -7,7 +7,7 @@ class WatchEntry extends Model
     protected $fillable = [
         'order', 'title', 'type', 'series_name', 'season', 'episode',
         'era', 'era_label', 'timeline', 'duration_minutes',
-        'recommendation', 'thumbnail_color', 'synopsis', 'watched', 'thumbnail_position',
+        'recommendation', 'thumbnail_color', 'synopsis', 'watched', 'thumbnail_position', 'before_watch', 'after_watch',
     ];
 
     protected $casts = ['watched' => 'boolean'];

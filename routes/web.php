@@ -12,16 +12,31 @@ Route::get('/auth/google/redirect', function () {
 Route::get('/auth/google/callback', function () {
     $googleUser = Socialite::driver('google')->stateless()->user();
 
-    $user = User::updateOrCreate([
-        'email' => $googleUser->email,
-    ], [
-        'name' => $googleUser->name,
-        'google_id' => $googleUser->id,
+    $user = User::updateOrCreate(
+        ['email' => $googleUser->email],
+        [
+            'name' => $googleUser->name,
+            'google_id' => $googleUser->id,
+            'email_verified_at' => now(),
+        ]
+    );
+
+
+\Log::info('User before login', [
+    'id' => $user->id,
+    'remember_token' => $user->remember_token,
+]);
+
+    Auth::guard('web')->login($user, true);
+
+    \Log::info('User after login', [
+        'id' => $user->id,
+        'remember_token' => $user->remember_token,
     ]);
 
-    Auth::login($user);
+   // request()->session()->regenerate();
 
-    return redirect('/');
+    return redirect()->route('dashboard');
 });
 
 Route::post('/logout', function () {

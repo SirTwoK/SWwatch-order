@@ -65,47 +65,93 @@
             </div>
         </div>
 
-        {{-- Controls --}}
-        <div class="flex flex-wrap gap-4 items-start justify-between mb-7">
-            <div class="flex flex-col gap-2.5 flex-1">
-                <div class="flex items-center gap-2.5 flex-wrap">
-                    <span class="text-xs tracking-[2px] uppercase text-[#556070]">Show</span>
-                    <div class="flex gap-1 flex-wrap">
-                        @foreach([
-                            ['all', 'All', ''],
-                            ['must', 'Must Watch', 'must'],
-                            ['recommended', 'Recommended', 'rec'],
-                            ['skip', 'Could Skip', 'skip'],
-                        ] as [$val, $label, $type])
-                            <button wire:click="$set('filterRecommendation', '{{ $val }}')"
-                                    class="px-3 py-1 border rounded-full text-xs font-semibold tracking-wide uppercase cursor-pointer transition-all duration-150
-                                    {{ $filterRecommendation === $val
-                                        ? ($type === 'must' ? 'bg-[#2a1f08] border-[#c9a227] text-[#c9a227]'
-                                        : ($type === 'rec'  ? 'bg-[#0a1f2a] border-[#4a9eca] text-[#4a9eca]'
-                                        : ($type === 'skip' ? 'bg-[#1a1f25] border-[#3a4a55] text-[#8a9aaa]'
-                                        : 'bg-[#1a2535] border-[#2a3a50] text-[#c8c4b4]')))
-                                        : 'border-[#1a2030] text-[#556070] hover:border-[#2a3545] hover:text-[#8a9aaa]' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
+            {{-- Controls --}}
+            <div class="flex flex-wrap gap-4 items-start justify-between mb-7">
+                <div class="flex flex-col gap-2.5 flex-1">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <span class="text-xs tracking-[2px] uppercase text-[#556070]">Show</span>
+                        <div class="flex gap-1 flex-wrap">
+                            @foreach([
+                                ['all', 'All', ''],
+                                ['must', 'Must Watch', 'must'],
+                                ['recommended', 'Recommended', 'rec'],
+                                ['skip', 'Could Skip', 'skip'],
+                            ] as [$val, $label, $type])
+                                <button wire:click="$set('filterRecommendation', '{{ $val }}')"
+                                        class="px-3 py-1 border rounded-full text-xs font-semibold tracking-wide uppercase cursor-pointer transition-all duration-150
+                                        {{ $filterRecommendation === $val
+                                            ? ($type === 'must' ? 'bg-[#2a1f08] border-[#c9a227] text-[#c9a227]'
+                                            : ($type === 'rec'  ? 'bg-[#0a1f2a] border-[#4a9eca] text-[#4a9eca]'
+                                            : ($type === 'skip' ? 'bg-[#1a1f25] border-[#3a4a55] text-[#8a9aaa]'
+                                            : 'bg-[#1a2535] border-[#2a3a50] text-[#c8c4b4]')))
+                                            : 'border-[#1a2030] text-[#556070] hover:border-[#2a3545] hover:text-[#8a9aaa]' }}">
+                                    {{ $label }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Collapsible legend --}}
+                    <div>
+                        <button wire:click="toggleLegend"
+                                class="flex items-center gap-2 text-[10px] tracking-[2px] uppercase text-[#3a4555] hover:text-[#556070] transition-colors">
+                            <svg class="w-3 h-3 transition-transform duration-200 {{ $legendOpen ? 'rotate-180' : '' }}" viewBox="0 0 16 16" fill="none">
+                                <polyline points="3,6 8,11 13,6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            What do these mean?
+                        </button>
+
+                        @if($legendOpen)
+                            <div class="mt-3 border border-[#1a2030] rounded-md overflow-hidden">
+                                <div class="grid grid-cols-4 divide-x divide-[#1a2030]">
+                                    <div class="px-4 py-3">
+                                        <div class="flex items-center gap-2 mb-1.5">
+                                            <span class="w-2 h-2 rounded-full bg-[#c9a227] shrink-0"></span>
+                                            <span class="text-xs font-bold tracking-[1.5px] uppercase text-[#c9a227]">Must Watch</span>
+                                        </div>
+                                        <p class="text-xs text-[#556070] leading-relaxed">Essential to the story. Skipping these will leave you lost or miss major character moments that pay off later.</p>
+                                    </div>
+                                    <div class="px-4 py-3">
+                                        <div class="flex items-center gap-2 mb-1.5">
+                                            <span class="w-2 h-2 rounded-full bg-[#9b6dff] shrink-0"></span>
+                                            <span class="text-xs font-bold tracking-[1.5px] uppercase text-[#9b6dff]">Highly Recommended</span>
+                                        </div>
+                                        <p class="text-xs text-[#556070] leading-relaxed">Worth your time. Expands the lore, develops characters, or adds context that enriches the must-watch content.</p>
+                                    </div>
+                                    <div class="px-4 py-3">
+                                        <div class="flex items-center gap-2 mb-1.5">
+                                            <span class="w-2 h-2 rounded-full bg-[#4a9eca] shrink-0"></span>
+                                            <span class="text-xs font-bold tracking-[1.5px] uppercase text-[#4a9eca]">Recommended</span>
+                                        </div>
+                                        <p class="text-xs text-[#556070] leading-relaxed">Has some bearing on the story and characters but mostly just fun Star Wars. Watch if you're enjoying the ride.</p>
+                                    </div>
+                                    <div class="px-4 py-3">
+                                        <div class="flex items-center gap-2 mb-1.5">
+                                            <span class="w-2 h-2 rounded-full bg-[#556070] shrink-0"></span>
+                                            <span class="text-xs font-bold tracking-[1.5px] uppercase text-[#8a9aaa]">Could Skip</span>
+                                        </div>
+                                        <p class="text-xs text-[#556070] leading-relaxed">Filler or self-contained. Fine for completionists but skipping won't affect your experience.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
-            </div>
 
-            <div class="flex items-center gap-3 flex-wrap">
-                <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-[#556070]">
-                    <input type="checkbox" wire:model.live="hideWatched" class="hidden peer">
-                    <div class="w-8 h-[18px] bg-[#1a2030] border border-[#2a3040] rounded-full relative transition-colors duration-200 peer-checked:bg-[#2a1f08] peer-checked:border-[#c9a227]">
-                        <div class="w-3 h-3 bg-[#556070] rounded-full absolute top-[2px] left-[2px] transition-all duration-200 peer-checked:left-[18px] peer-checked:bg-[#c9a227]"></div>
-                    </div>
-                    <span>Hide watched</span>
-                </label>
-                <button wire:click="resetProgress"
-                        class="bg-transparent border border-[#1a2030] rounded text-[#556070] text-xs font-semibold tracking-widest uppercase px-3 py-1 cursor-pointer transition-all hover:border-[#2a3545] hover:text-[#8a9aaa]">
-                    Reset
-                </button>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-[#556070]">
+                        <input type="checkbox" wire:model.live="hideWatched" class="hidden peer">
+                        <div class="w-8 h-[18px] bg-[#1a2030] border border-[#2a3040] rounded-full relative transition-colors duration-200 peer-checked:bg-[#2a1f08] peer-checked:border-[#c9a227]">
+                            <div class="w-3 h-3 bg-[#556070] rounded-full absolute top-[2px] left-[2px] transition-all duration-200 peer-checked:left-[18px] peer-checked:bg-[#c9a227]"></div>
+                        </div>
+                        <span>Hide watched</span>
+                    </label>
+                    <button wire:click="resetProgress"
+                            class="bg-transparent border border-[#1a2030] rounded text-[#556070] text-xs font-semibold tracking-widest uppercase px-3 py-1 cursor-pointer transition-all hover:border-[#2a3545] hover:text-[#8a9aaa]">
+                        Reset
+                    </button>
+                </div>
             </div>
-        </div>
 
         {{-- Watch List --}}
         <div class="flex flex-col">
@@ -122,13 +168,13 @@
                         @if ($item['type'] === 'film')
                             {{-- ── Film bar ── --}}
                             @php $entry = $item['entry']; @endphp
-                            <div class="relative flex items-center h-16 rounded-md overflow-hidden mb-1.5 transition-transform duration-150 hover:translate-x-1"
+                            <div class="relative flex items-center h-24 rounded-md overflow-hidden mb-1.5 transition-transform duration-150 hover:translate-x-1"
                                 wire:key="film-{{ $entry->id }}">
 
-                                <div class="absolute inset-0 transition-all duration-200 {{ $entry->watched ? 'brightness-[0.15] saturate-[0.2]' : 'brightness-[0.45] saturate-75' }}"
-                                    style="background-color: {{ $entry->thumbnail_color }}; {{ $entry->thumbnail_url ? 'background-image: url(' . $entry->thumbnail_url . '); background-size: cover; background-position: ' . $entry->thumbnail_position . ';' : '' }}"></div>
-                                <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,0.85) 0%, rgba(8,10,15,0.40) 60%, transparent 100%);"></div>
-
+                                <div class="absolute inset-0 transition-all duration-200 {{ $entry->watched ? 'brightness-[0.15] saturate-[0.2]' : 'brightness-[0.30] saturate-75' }}"
+                                    style="background-color: {{ $entry->thumbnail_color }}; {{ $entry->thumbnail_url ? 'background-image: url(' . $entry->thumbnail_url . '); background-size: 100%; background-position: ' . $entry->thumbnail_position . ';' : '' }}"></div>
+                                {{-- <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,0.85) 0%, rgba(8,10,15,0.40) 60%, transparent 100%);"></div> --}}
+                                <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,1) 0%, rgba(8,10,15,1) 25%, rgba(8,10,15,0.7) 40%, rgba(8,10,15,0.2) 60%, transparent 75%);"></div>
                                 <div class="relative w-[52px] text-center shrink-0">
                                     <span class="font-['Exo_2'] text-xs font-bold tracking-wide {{ $entry->watched ? 'text-[#1f2a35]' : 'text-[#556070]' }}">
                                         {{ str_pad($entry->order, 2, '0', STR_PAD_LEFT) }}
@@ -167,9 +213,54 @@
                                 </button>
                             </div>
 
-                            @if($expandedId === $entry->id && $entry->synopsis)
-                                <div class="bg-[#0d1018] border border-[#1a2030] border-t-0 rounded-b-md px-5 py-3.5 -mt-1.5 mb-1.5 pl-[70px]">
-                                    <p class="text-sm text-[#8a9aaa] leading-relaxed italic">{{ $entry->synopsis }}</p>
+                            @if($expandedId === $entry->id)
+                                <div class="bg-[#0d1018] border border-[#1a2030] border-t-0 rounded-b-md -mt-1.5 mb-1.5 overflow-hidden">
+
+                                    {{-- Synopsis --}}
+                                    @if($entry->synopsis)
+                                        <div class="px-6 py-4 pl-[70px] border-b border-[#1a2030]">
+                                            <p class="text-sm text-[#8a9aaa] leading-relaxed italic">{{ $entry->synopsis }}</p>
+                                        </div>
+                                    @endif
+
+                                    {{-- Before watch --}}
+                                    <div class="px-6 py-4 pl-[70px] border-b border-[#1a2030]">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-[15px] tracking-[3px] uppercase text-[#4a9eca]">Before you watch</span>
+                                            <div class="flex-1 h-px bg-[#1a2030]"></div>
+                                        </div>
+                                        @if($entry->before_watch)
+                                            <p class="text-xs text-[#556070] leading-relaxed">{{ $entry->before_watch }}</p>
+                                        @else
+                                            <p class="text-xs text-[#2a3545] leading-relaxed italic">Context and things to remember coming soon.</p>
+                                        @endif
+                                    </div>
+
+                                    {{-- After watch — only if watched --}}
+                                    @if($entry->watched)
+                                        <div class="px-6 py-4 pl-[70px]">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="text-[15px] tracking-[3px] uppercase text-[#c9a227]">After you watch</span>
+                                                <div class="flex-1 h-px bg-[#1a2030]"></div>
+                                                <span class="text-[15px] tracking-[2px] uppercase text-[#3a4555]">spoilers</span>
+                                            </div>
+                                            @if($entry->after_watch)
+                                                <p class="text-xs text-[#556070] leading-relaxed">{{ $entry->after_watch }}</p>
+                                            @else
+                                                <p class="text-xs text-[#2a3545] leading-relaxed italic">Spoiler breakdown and notes coming soon.</p>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <div class="px-6 py-4 pl-[70px]">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="text-[15px] tracking-[3px] uppercase text-[#3a4555]">After you watch</span>
+                                                <div class="flex-1 h-px bg-[#1a2030]"></div>
+                                                <span class="text-[15px] tracking-[2px] uppercase text-[#3a4555]">spoilers</span>
+                                            </div>
+                                            <p class="text-xs text-[#2a3545] leading-relaxed italic">Mark as watched to reveal spoiler notes.</p>
+                                        </div>
+                                    @endif
+
                                 </div>
                             @endif
 
@@ -188,16 +279,19 @@
                             @endphp
 
                             {{-- Group banner --}}
-                            <div class="relative flex items-center h-16 rounded-md {{ $isOpen ? 'rounded-b-none' : '' }} overflow-hidden mb-0 transition-transform duration-150 hover:translate-x-1 cursor-pointer"
+                            <div class="relative flex items-center h-24 rounded-md {{ $isOpen ? 'rounded-b-none' : '' }} overflow-hidden mb-1.5 transition-transform duration-150 hover:translate-x-1 cursor-pointer"
                                 wire:key="group-{{ $groupKey }}"
                                 wire:click="toggleGroup('{{ $groupKey }}')">
 
                                 <div class="absolute inset-0 {{ $allWatched ? 'brightness-[0.15] saturate-[0.2]' : 'brightness-[0.45] saturate-75' }}"
                                     style="
                                         background-color: {{ $first->thumbnail_color }};
-                                        {{ $item['group_thumbnail'] ? 'background-image: url(' . $item['group_thumbnail'] . '); background-size: cover; background-position: center 5%;' : '' }}
+                                        {{ $item['group_thumbnail'] ? 'background-image: url(' . $item['group_thumbnail'] . '); background-size: 85% auto; background-repeat: no-repeat; background-position: ' . ($item['group_thumbnail_position'] ?? 'center') . ';' : '' }}
                                     "></div>
-                                <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,0.85) 0%, rgba(8,10,15,0.40) 60%, transparent 100%);"></div>
+
+                                {{-- Left-to-right fade + hard right cutoff --}}
+                                <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,1) 0%, rgba(8,10,15,1) 25%, rgba(8,10,15,0.7) 40%, rgba(8,10,15,0.2) 60%, transparent 75%);"></div>
+                              
 
                                 {{-- Order range --}}
                                 <div class="relative w-[52px] text-center shrink-0">
@@ -235,18 +329,7 @@
                                 <div class="relative w-px h-8 bg-[#1a2030] shrink-0"></div>
 
                                 {{-- Group watched indicator --}}
-                                <div class="relative w-[52px] flex items-center justify-center shrink-0">
-                                    <div class="w-[22px] h-[22px] rounded-full border flex items-center justify-center
-                                        {{ $allWatched ? 'bg-[#c9a227] border-[#c9a227]' : ($anyWatched ? 'border-[#c9a227]' : 'border-[#556070]') }}">
-                                        @if($allWatched)
-                                            <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-                                                <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#0a0c10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                        @elseif($anyWatched)
-                                            <div class="w-1.5 h-1.5 rounded-full bg-[#c9a227]"></div>
-                                        @endif
-                                    </div>
-                                </div>
+                                
                             </div>
 
                             {{-- Expanded episodes --}}
@@ -274,13 +357,19 @@
                                             <div class="relative w-px h-7 bg-[#1a2030] shrink-0"></div>
 
                                             {{-- Info --}}
-                                            <button class="relative flex-1 px-4 min-w-0 text-left bg-transparent border-none cursor-pointer"
-                                                    wire:click="toggleExpanded({{ $entry->id }})">
-                                                <div class="text-[10px] tracking-[1.5px] uppercase {{ $entry->watched ? 'text-[#1a2530]' : 'text-[#445060]' }} mb-0.5">
-                                                    S{{ $entry->season }} E{{ $entry->episode }}
-                                                </div>
-                                                <div class="font-['Exo_2'] text-sm font-semibold tracking-wide truncate {{ $entry->watched ? 'text-[#2a3545]' : 'text-[#d8d4c4]' }}">
-                                                    {{ $entry->title }}
+                                            <button class="relative flex-1 px-4 min-w-0 text-left bg-transparent border-none cursor-pointer" wire:click="toggleExpanded({{ $entry->id }})">
+                                                <div class="flex items-center gap-2 mb-0.5">
+                                                    <div class="font-['Exo_2'] text-base font-semibold tracking-wide truncate {{ $entry->watched ? 'text-[#2a3545]' : 'text-[#f0ece0]' }}">
+                                                        {{ $entry->title }}
+                                                    </div>
+                                                    <div class="flex items-center gap-1 shrink-0">
+                                                        <span class="px-1.5 py-0.5 rounded text-[15px] font-bold tracking-wide bg-[#1a2535] text-[#4a9eca] border border-[#2a3a50]">
+                                                            S{{ $entry->season }}
+                                                        </span>
+                                                        <span class="px-1.5 py-0.5 rounded text-[15px] font-bold tracking-wide bg-[#251a10] text-[#c9a227] border border-[#3a2a10]">
+                                                            E{{ $entry->episode }}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </button>
 
@@ -311,9 +400,51 @@
                                         </div>
 
                                         {{-- Synopsis --}}
-                                        @if($expandedId === $entry->id && $entry->synopsis)
-                                            <div class="bg-[#080c12] px-5 py-3 pl-[100px] border-b border-[#1a2030]">
-                                                <p class="text-sm text-[#8a9aaa] leading-relaxed italic">{{ $entry->synopsis }}</p>
+                                        @if($expandedId === $entry->id)
+                                            <div class="bg-[#080c12] border-b border-[#1a2030] overflow-hidden">
+
+                                                @if($entry->synopsis)
+                                                    <div class="px-5 py-3 pl-[100px] border-b border-[#1a2030]">
+                                                        <p class="text-sm text-[#8a9aaa] leading-relaxed italic">{{ $entry->synopsis }}</p>
+                                                    </div>
+                                                @endif
+
+                                                <div class="px-5 py-3 pl-[100px] border-b border-[#1a2030]">
+                                                    <div class="flex items-center gap-2 mb-2">
+                                                        <span class="text-[13px] tracking-[3px] uppercase text-[#4a9eca]">Before you watch</span>
+                                                        <div class="flex-1 h-px bg-[#111820]"></div>
+                                                    </div>
+                                                    @if($entry->before_watch)
+                                                        <p class="text-xs text-[#556070] leading-relaxed">{{ $entry->before_watch }}</p>
+                                                    @else
+                                                        <p class="text-xs text-[#2a3545] leading-relaxed italic">Context and things to remember coming soon.</p>
+                                                    @endif
+                                                </div>
+
+                                                @if($entry->watched)
+                                                    <div class="px-5 py-3 pl-[100px]">
+                                                        <div class="flex items-center gap-2 mb-2">
+                                                            <span class="text-[13px] tracking-[3px] uppercase text-[#c9a227]">After you watch</span>
+                                                            <div class="flex-1 h-px bg-[#111820]"></div>
+                                                            <span class="text-[13px] tracking-[2px] uppercase text-[#3a4555]">spoilers</span>
+                                                        </div>
+                                                        @if($entry->after_watch)
+                                                            <p class="text-xs text-[#556070] leading-relaxed">{{ $entry->after_watch }}</p>
+                                                        @else
+                                                            <p class="text-xs text-[#2a3545] leading-relaxed italic">Spoiler breakdown and notes coming soon.</p>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <div class="px-5 py-3 pl-[100px]">
+                                                        <div class="flex items-center gap-2 mb-2">
+                                                            <span class="text-[13px] tracking-[3px] uppercase text-[#3a4555]">After you watch</span>
+                                                            <div class="flex-1 h-px bg-[#111820]"></div>
+                                                            <span class="text-[13px] tracking-[2px] uppercase text-[#3a4555]">spoilers</span>
+                                                        </div>
+                                                        <p class="text-xs text-[#2a3545] leading-relaxed italic">Mark as watched to reveal spoiler notes.</p>
+                                                    </div>
+                                                @endif
+
                                             </div>
                                         @endif
                                     @endforeach
@@ -329,7 +460,7 @@
             @endforelse
         </div>
 
-        {{-- Legend --}}
+        {{-- Legend
         <div class="flex gap-6 flex-wrap mt-8 pt-5 border-t border-[#1a2030]">
             <div class="flex items-center gap-1.5 text-xs text-[#556070]">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#c9a227] shrink-0"></span> Must watch
@@ -340,6 +471,6 @@
             <div class="flex items-center gap-1.5 text-xs text-[#556070]">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#556070] shrink-0"></span> Could skip
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>

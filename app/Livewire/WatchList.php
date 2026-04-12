@@ -61,17 +61,13 @@ class WatchList extends Component
             })
             ->when($this->filterRecommendation !== 'all',
                 fn($q) => $q->where('recommendation', $this->filterRecommendation))
-            ->when($this->hideWatched,
-                fn($q) => $q->where(function ($q) {
-                    $q->whereNull('uws.watched')
-                        ->orWhere('uws.watched', false);
-                }))
             ->select('watch_entries.*', 'uws.watched as user_watched')
             ->get()
             ->map(function ($entry) {
                 $entry->watched = (bool) $entry->user_watched;
                 return $entry;
             });
+            
 
         // Build consecutive series groups
         $grouped = [];
@@ -93,12 +89,32 @@ class WatchList extends Component
                     'episodes'    => $isSeries ? [$entry] : [],
                     'entry'       => $isSeries ? null : $entry,
                     'group_thumbnail'   => $isSeries ? $this->getGroupThumbnail($entry->series_name) : null,
+                    'group_thumbnail_position'   => $isSeries ? $this->getGroupThumbnailPosition($entry->series_name) : null,
                 ];
             }
 
             $prev = [
                 'series_name' => $isSeries ? $entry->series_name : null,
             ];
+        }
+        if ($this->hideWatched) {
+            $grouped = array_filter($grouped, function ($item) {
+                if ($item['type'] === 'film') {
+                    return !$item['entry']->watched;
+                }
+                $watchedCount = collect($item['episodes'])->where('watched', true)->count();
+                return $watchedCount < count($item['episodes']);
+            });
+        
+            // Also filter watched episodes within each group
+            $grouped = array_map(function ($item) {
+                if ($item['type'] === 'series_group') {
+                    $item['episodes'] = array_values(
+                        array_filter($item['episodes'], fn($ep) => !$ep->watched)
+                    );
+                }
+                return $item;
+            }, $grouped);
         }
 
         // Group by era
@@ -162,19 +178,46 @@ class WatchList extends Component
     private function getGroupThumbnail(string $seriesName): ?string
     {
         return match($seriesName) {
-            'The Clone Wars'         => '/images/clone-wars-banner.jpg',
-            'The Bad Batch'          => '/images/bad-batch-banner.jpg',
+            'The Clone Wars'         => '/images/cw6.jpg',
+            'The Bad Batch'          => '/images/bad-batch.jpeg',
             'Star Wars Rebels'       => '/images/rebels-banner.jpg',
             'The Mandalorian'        => '/images/mandalorian-banner.jpg',
             'The Book of Boba Fett'  => '/images/boba-fett-banner.jpg',
             'Ahsoka'                 => '/images/ahsoka-banner.jpg',
             'Obi-Wan Kenobi'         => '/images/obi-wan-banner.jpg',
             'Andor'                  => '/images/andor-banner.jpg',
-            'Tales of the Jedi'      => '/images/tales-jedi-banner.jpg',
+            'Tales of the Jedi'      => '/images/talesjedi3.jpg',
             'Tales of the Empire'    => '/images/tales-empire-banner.jpg',
-            'Tales of the Underworld'=> '/images/tales-underworld-banner.jpg',
+            'Tales of the Underworld'=> '/images/tales-of-the-underworld.jpg',
             default                  => null,
         };
+    }
+
+    private function getGroupThumbnailPosition(string $seriesName): ?string
+    {
+        return match($seriesName) {
+            'The Clone Wars'         => 'right 48%',
+            'The Bad Batch'          => 'right 5%',
+            'Star Wars Rebels'       => '',
+            'The Mandalorian'        => '',
+            'The Book of Boba Fett'  => '',
+            'Ahsoka'                 => '',
+            'Obi-Wan Kenobi'         => '',
+            'Andor'                  => '',
+            'Tales of the Jedi'      => 'right 58%',
+            'Tales of the Empire'    => '',
+            'Tales of the Underworld'=> 'right 12%',
+            default                  => null,
+        };
+    }
+
+
+    // logic for recommendation legend
+    public bool $legendOpen = false;
+
+    public function toggleLegend(): void
+    {
+        $this->legendOpen = !$this->legendOpen;
     }
 
 
@@ -187,6 +230,7 @@ class WatchList extends Component
             'hideWatched'          => $this->hideWatched,
             'expandedId'           => $this->expandedId,
             'expandedGroups'       => $this->expandedGroups,
+            'legendOpen'           => $this->legendOpen,
         ]);
     }
 }
