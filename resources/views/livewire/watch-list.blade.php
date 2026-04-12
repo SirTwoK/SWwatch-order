@@ -117,84 +117,215 @@
                         <span class="flex-1 h-px bg-[#1a2030]"></span>
                     </div>
 
-                    @foreach ($group as $entry)
-                        <div class="relative flex items-center h-16 rounded-md overflow-hidden mb-1.5 transition-transform duration-150 hover:translate-x-1"
-                             wire:key="entry-{{ $entry->id }}">
+                    @foreach ($group as $item)
 
-                            <div class="absolute inset-0 transition-all duration-200 {{ $entry->watched ? 'brightness-[0.15] saturate-[0.2]' : 'brightness-[0.45] saturate-75' }}"
-                                style="background-image: url('{{ $entry->thumbnail_url }}'); background-size: cover; background-position: {{ $entry->thumbnail_position }};"
+                        @if ($item['type'] === 'film')
+                            {{-- ── Film bar ── --}}
+                            @php $entry = $item['entry']; @endphp
+                            <div class="relative flex items-center h-16 rounded-md overflow-hidden mb-1.5 transition-transform duration-150 hover:translate-x-1"
+                                wire:key="film-{{ $entry->id }}">
 
-                            <div class="absolute inset-0"
-                                 style="background: linear-gradient(90deg, rgba(8,10,15,0.85) 0%, rgba(8,10,15,0.40) 60%, transparent 100%);"></div>
+                                <div class="absolute inset-0 transition-all duration-200 {{ $entry->watched ? 'brightness-[0.15] saturate-[0.2]' : 'brightness-[0.45] saturate-75' }}"
+                                    style="background-color: {{ $entry->thumbnail_color }}; {{ $entry->thumbnail_url ? 'background-image: url(' . $entry->thumbnail_url . '); background-size: cover; background-position: ' . $entry->thumbnail_position . ';' : '' }}"></div>
+                                <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,0.85) 0%, rgba(8,10,15,0.40) 60%, transparent 100%);"></div>
 
-                            <div class="relative w-[52px] text-center shrink-0">
-                                <span class="font-['Exo_2'] text-xs font-bold tracking-wide {{ $entry->watched ? 'text-[#1f2a35]' : 'text-[#556070]' }}">
-                                    {{ str_pad($entry->order, 2, '0', STR_PAD_LEFT) }}
-                                </span>
+                                <div class="relative w-[52px] text-center shrink-0">
+                                    <span class="font-['Exo_2'] text-xs font-bold tracking-wide {{ $entry->watched ? 'text-[#1f2a35]' : 'text-[#556070]' }}">
+                                        {{ str_pad($entry->order, 2, '0', STR_PAD_LEFT) }}
+                                    </span>
+                                </div>
+
+                                <div class="relative w-px h-8 bg-[#1a2030] shrink-0"></div>
+
+                                <button class="relative flex-1 px-4 min-w-0 text-left bg-transparent border-none cursor-pointer"
+                                        wire:click="toggleExpanded({{ $entry->id }})">
+                                    <div class="text-xs tracking-[1.5px] uppercase {{ $entry->watched ? 'text-[#1a2530]' : 'text-[#556070]' }} mb-0.5">Film</div>
+                                    <div class="font-['Exo_2'] text-base font-semibold tracking-wide truncate {{ $entry->watched ? 'text-[#2a3545]' : 'text-[#f0ece0]' }}">{{ $entry->title }}</div>
+                                    <div class="text-xs text-[#556070] mt-0.5">{{ $entry->timeline }} · {{ $entry->formatted_duration }}</div>
+                                </button>
+
+                                <div class="relative flex items-center gap-1.5 px-4 shrink-0 {{ $entry->watched ? 'opacity-20' : '' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full shrink-0 {{ $entry->recommendation === 'must' ? 'bg-[#c9a227]' : ($entry->recommendation === 'recommended' ? 'bg-[#4a9eca]' : 'bg-[#556070]') }}"></span>
+                                    <span class="text-xs tracking-[1.5px] uppercase font-semibold whitespace-nowrap {{ $entry->recommendation === 'must' ? 'text-[#c9a227]' : ($entry->recommendation === 'recommended' ? 'text-[#4a9eca]' : 'text-[#556070]') }}">
+                                        @if($entry->recommendation === 'must') Must watch
+                                        @elseif($entry->recommendation === 'recommended') Recommended
+                                        @else Could skip @endif
+                                    </span>
+                                </div>
+
+                                <div class="relative w-px h-8 bg-[#1a2030] shrink-0"></div>
+
+                                <button class="relative w-[52px] h-full flex items-center justify-center bg-transparent border-none cursor-pointer shrink-0 group"
+                                        wire:click="toggleWatched({{ $entry->id }})">
+                                    <div class="w-[22px] h-[22px] rounded-full border flex items-center justify-center transition-all duration-200 {{ $entry->watched ? 'bg-[#c9a227] border-[#c9a227]' : 'border-[#556070] group-hover:border-[#c9a227]' }}">
+                                        @if($entry->watched)
+                                            <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
+                                                <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#0a0c10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        @endif
+                                    </div>
+                                </button>
                             </div>
 
-                            <div class="relative w-px h-8 bg-[#1a2030] shrink-0"></div>
+                            @if($expandedId === $entry->id && $entry->synopsis)
+                                <div class="bg-[#0d1018] border border-[#1a2030] border-t-0 rounded-b-md px-5 py-3.5 -mt-1.5 mb-1.5 pl-[70px]">
+                                    <p class="text-sm text-[#8a9aaa] leading-relaxed italic">{{ $entry->synopsis }}</p>
+                                </div>
+                            @endif
 
-                            <button class="relative flex-1 px-4 min-w-0 text-left bg-transparent border-none cursor-pointer"
-                                    wire:click="toggleExpanded({{ $entry->id }})">
-                                <div class="text-xs tracking-[1.5px] uppercase {{ $entry->watched ? 'text-[#1a2530]' : 'text-[#556070]' }} mb-0.5">
-                                    @if($entry->type === 'series')
-                                        {{ $entry->series_name }} · S{{ $entry->season }} E{{ $entry->episode }}
-                                    @else
-                                        Film
-                                    @endif
-                                </div>
-                                <div class="font-['Exo_2'] text-base font-semibold tracking-wide truncate transition-colors duration-200 {{ $entry->watched ? 'text-[#2a3545]' : 'text-[#f0ece0]' }}">
-                                    {{ $entry->title }}
-                                </div>
-                                <div class="text-xs text-[#556070] mt-0.5">
-                                    {{ $entry->timeline }} · {{ $entry->formatted_duration }}
-                                </div>
-                            </button>
+                        @else
+                            {{-- ── Series group banner ── --}}
+                            @php
+                                $episodes   = $item['episodes'];
+                                $first      = $episodes[0];
+                                $last       = $episodes[count($episodes) - 1];
+                                $groupKey   = $item['series_name'] . '-' . $first->order;
+                                $isOpen     = in_array($groupKey, $expandedGroups);
+                                $epCount    = count($episodes);
+                                $watchedCount = collect($episodes)->where('watched', true)->count();
+                                $allWatched = $watchedCount === $epCount;
+                                $anyWatched = $watchedCount > 0;
+                            @endphp
 
-                            <div class="relative flex items-center gap-1.5 px-4 shrink-0 {{ $entry->watched ? 'opacity-20' : '' }}">
-                                <span class="w-1.5 h-1.5 rounded-full shrink-0
-                                    {{ $entry->recommendation === 'must' ? 'bg-[#c9a227]' : ($entry->recommendation === 'recommended' ? 'bg-[#4a9eca]' : 'bg-[#556070]') }}">
-                                </span>
-                                <span class="text-xs tracking-[1.5px] uppercase font-semibold whitespace-nowrap
-                                    {{ $entry->recommendation === 'must' ? 'text-[#c9a227]' : ($entry->recommendation === 'recommended' ? 'text-[#4a9eca]' : 'text-[#556070]') }}">
-                                    @if($entry->recommendation === 'must') Must watch
-                                    @elseif($entry->recommendation === 'recommended') Recommended
-                                    @else Could skip
-                                    @endif
-                                </span>
+                            {{-- Group banner --}}
+                            <div class="relative flex items-center h-16 rounded-md {{ $isOpen ? 'rounded-b-none' : '' }} overflow-hidden mb-0 transition-transform duration-150 hover:translate-x-1 cursor-pointer"
+                                wire:key="group-{{ $groupKey }}"
+                                wire:click="toggleGroup('{{ $groupKey }}')">
+
+                                <div class="absolute inset-0 {{ $allWatched ? 'brightness-[0.15] saturate-[0.2]' : 'brightness-[0.45] saturate-75' }}"
+                                    style="
+                                        background-color: {{ $first->thumbnail_color }};
+                                        {{ $item['group_thumbnail'] ? 'background-image: url(' . $item['group_thumbnail'] . '); background-size: cover; background-position: center 5%;' : '' }}
+                                    "></div>
+                                <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,0.85) 0%, rgba(8,10,15,0.40) 60%, transparent 100%);"></div>
+
+                                {{-- Order range --}}
+                                <div class="relative w-[52px] text-center shrink-0">
+                                    <span class="font-['Exo_2'] text-[10px] font-bold tracking-wide text-[#556070] leading-tight">
+                                        {{ str_pad($first->order, 2, '0', STR_PAD_LEFT) }}–{{ str_pad($last->order, 2, '0', STR_PAD_LEFT) }}
+                                    </span>
+                                </div>
+
+                                <div class="relative w-px h-8 bg-[#1a2030] shrink-0"></div>
+
+                                {{-- Title + meta --}}
+                                <div class="relative flex-1 px-4 min-w-0">
+                                    <div class="text-xs tracking-[1.5px] uppercase text-[#556070] mb-0.5">
+                                        Series · {{ $epCount }} episodes
+                                    </div>
+                                    <div class="font-['Exo_2'] text-base font-semibold tracking-wide truncate {{ $allWatched ? 'text-[#2a3545]' : 'text-[#f0ece0]' }}">
+                                        {{ $item['series_name'] }}
+                                        <span class="text-[#556070] font-normal text-sm">
+                                            — {{ $epCount }} episodes
+                                        </span>
+                                    </div>
+                                    <div class="text-xs text-[#556070] mt-0.5">
+                                        {{ $first->timeline }}
+                                        @if($anyWatched) · {{ $watchedCount }}/{{ $epCount }} watched @endif
+                                    </div>
+                                </div>
+
+                                {{-- Expand indicator --}}
+                                <div class="relative px-4 shrink-0 text-[#556070]">
+                                    <svg class="w-4 h-4 transition-transform duration-200 {{ $isOpen ? 'rotate-180' : '' }}" viewBox="0 0 16 16" fill="none">
+                                        <polyline points="3,6 8,11 13,6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+
+                                <div class="relative w-px h-8 bg-[#1a2030] shrink-0"></div>
+
+                                {{-- Group watched indicator --}}
+                                <div class="relative w-[52px] flex items-center justify-center shrink-0">
+                                    <div class="w-[22px] h-[22px] rounded-full border flex items-center justify-center
+                                        {{ $allWatched ? 'bg-[#c9a227] border-[#c9a227]' : ($anyWatched ? 'border-[#c9a227]' : 'border-[#556070]') }}">
+                                        @if($allWatched)
+                                            <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
+                                                <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#0a0c10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        @elseif($anyWatched)
+                                            <div class="w-1.5 h-1.5 rounded-full bg-[#c9a227]"></div>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="relative w-px h-8 bg-[#1a2030] shrink-0"></div>
+                            {{-- Expanded episodes --}}
+                            @if($isOpen)
+                                <div class="border border-[#1a2030] border-t-0 rounded-b-md mb-1.5 overflow-hidden">
+                                    @foreach($episodes as $entry)
+                                        <div class="relative flex items-center h-14 transition-all duration-150 hover:translate-x-1 {{ !$loop->last ? 'border-b border-[#1a2030]' : '' }}"
+                                            wire:key="ep-{{ $entry->id }}">
 
-                            <button class="relative w-[52px] h-full flex items-center justify-center bg-transparent border-none cursor-pointer shrink-0 group"
-                                    wire:click="toggleWatched({{ $entry->id }})">
-                                <div class="w-[22px] h-[22px] rounded-full border flex items-center justify-center transition-all duration-200
-                                    {{ $entry->watched ? 'bg-[#c9a227] border-[#c9a227]' : 'border-[#556070] group-hover:border-[#c9a227]' }}">
-                                    @if($entry->watched)
-                                        <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-                                            <polyline points="1.5,5 4,7.5 8.5,2.5"
-                                                      stroke="#0a0c10" stroke-width="1.5"
-                                                      stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    @endif
+                                            {{-- Indented bg --}}
+                                            <div class="absolute inset-0 {{ $entry->watched ? 'brightness-[0.12] saturate-[0.2]' : 'brightness-[0.30] saturate-50' }}"
+                                                style="background-color: {{ $entry->thumbnail_color }}; {{ $entry->thumbnail_url ? 'background-image: url(' . $entry->thumbnail_url . '); background-size: cover; background-position: ' . $entry->thumbnail_position . ';' : '' }}"></div>
+                                            <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(8,10,15,0.9) 0%, rgba(8,10,15,0.5) 70%, transparent 100%);"></div>
+
+                                            {{-- Indent spacer --}}
+                                            <div class="relative w-6 shrink-0"></div>
+
+                                            {{-- Episode number --}}
+                                            <div class="relative w-[46px] text-center shrink-0">
+                                                <span class="font-['Exo_2'] text-[10px] font-bold tracking-wide {{ $entry->watched ? 'text-[#1f2a35]' : 'text-[#556070]' }}">
+                                                    {{ str_pad($entry->order, 2, '0', STR_PAD_LEFT) }}
+                                                </span>
+                                            </div>
+
+                                            <div class="relative w-px h-7 bg-[#1a2030] shrink-0"></div>
+
+                                            {{-- Info --}}
+                                            <button class="relative flex-1 px-4 min-w-0 text-left bg-transparent border-none cursor-pointer"
+                                                    wire:click="toggleExpanded({{ $entry->id }})">
+                                                <div class="text-[10px] tracking-[1.5px] uppercase {{ $entry->watched ? 'text-[#1a2530]' : 'text-[#445060]' }} mb-0.5">
+                                                    S{{ $entry->season }} E{{ $entry->episode }}
+                                                </div>
+                                                <div class="font-['Exo_2'] text-sm font-semibold tracking-wide truncate {{ $entry->watched ? 'text-[#2a3545]' : 'text-[#d8d4c4]' }}">
+                                                    {{ $entry->title }}
+                                                </div>
+                                            </button>
+
+                                            {{-- Badge --}}
+                                            <div class="relative flex items-center gap-1.5 px-3 shrink-0 {{ $entry->watched ? 'opacity-20' : '' }}">
+                                                <span class="w-1.5 h-1.5 rounded-full shrink-0 {{ $entry->recommendation === 'must' ? 'bg-[#c9a227]' : ($entry->recommendation === 'recommended' ? 'bg-[#4a9eca]' : 'bg-[#556070]') }}"></span>
+                                                <span class="text-[10px] tracking-[1.5px] uppercase font-semibold whitespace-nowrap {{ $entry->recommendation === 'must' ? 'text-[#c9a227]' : ($entry->recommendation === 'recommended' ? 'text-[#4a9eca]' : 'text-[#556070]') }}">
+                                                    @if($entry->recommendation === 'must') Must watch
+                                                    @elseif($entry->recommendation === 'recommended') Recommended
+                                                    @else Could skip @endif
+                                                </span>
+                                            </div>
+
+                                            <div class="relative w-px h-7 bg-[#1a2030] shrink-0"></div>
+
+                                            {{-- Watched toggle --}}
+                                            <button class="relative w-[52px] h-full flex items-center justify-center bg-transparent border-none cursor-pointer shrink-0 group"
+                                                    wire:click.stop="toggleWatched({{ $entry->id }})">
+                                                <div class="w-[20px] h-[20px] rounded-full border flex items-center justify-center transition-all duration-200
+                                                    {{ $entry->watched ? 'bg-[#c9a227] border-[#c9a227]' : 'border-[#556070] group-hover:border-[#c9a227]' }}">
+                                                    @if($entry->watched)
+                                                        <svg class="w-2 h-2" viewBox="0 0 10 10" fill="none">
+                                                            <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#0a0c10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
+                                                    @endif
+                                                </div>
+                                            </button>
+                                        </div>
+
+                                        {{-- Synopsis --}}
+                                        @if($expandedId === $entry->id && $entry->synopsis)
+                                            <div class="bg-[#080c12] px-5 py-3 pl-[100px] border-b border-[#1a2030]">
+                                                <p class="text-sm text-[#8a9aaa] leading-relaxed italic">{{ $entry->synopsis }}</p>
+                                            </div>
+                                        @endif
+                                    @endforeach
                                 </div>
-                            </button>
-                        </div>
+                            @endif
 
-                        @if($expandedId === $entry->id && $entry->synopsis)
-                            <div class="bg-[#0d1018] border border-[#1a2030] border-t-0 rounded-b-md px-5 py-3.5 -mt-1.5 mb-1.5 pl-[70px]"
-                                 wire:key="synopsis-{{ $entry->id }}">
-                                <p class="text-sm text-[#8a9aaa] leading-relaxed italic">{{ $entry->synopsis }}</p>
-                            </div>
                         @endif
 
                     @endforeach
                 </div>
             @empty
-                <div class="text-center py-12 text-[#556070] text-sm tracking-wide">
-                    No entries match your filters.
-                </div>
+                <div class="text-center py-12 text-[#556070] text-sm tracking-wide">No entries match your filters.</div>
             @endforelse
         </div>
 
