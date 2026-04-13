@@ -352,7 +352,7 @@
                                                     : ($entry->recommendation === 'highly_recommended' ? 'bg-[#9b6dff]'
                                                     : ($entry->recommendation === 'recommended' ? 'bg-[#4a9eca]'
                                                     : 'bg-[#7a8fa0]')) }}"></span>
-                                                <span class="text-[10px] tracking-[1.5px] uppercase font-semibold whitespace-nowrap
+                                                <span class="text-[13px] tracking-[1.5px] uppercase font-semibold whitespace-nowrap
                                                     {{ $entry->recommendation === 'must' ? 'text-[#c9a227]'
                                                     : ($entry->recommendation === 'highly_recommended' ? 'text-[#9b6dff]'
                                                     : ($entry->recommendation === 'recommended' ? 'text-[#4a9eca]'
