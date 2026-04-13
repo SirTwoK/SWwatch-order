@@ -30,7 +30,7 @@
 
             <div>
                 <h1 class="font-['Exo_2'] text-3xl font-extrabold tracking-[4px] uppercase text-[#f0ece0]">★ Star Wars</h1>
-                <p class="text-xs tracking-[2px] uppercase text-[#7a8fa0] mt-1">Greatest Watch Order</p>
+                <p class="text-xs tracking-[2px] uppercase text-[#7a8fa0] mt-1">Greatest Watch Order In The Galaxy</p>
             </div>
             <div class="min-w-[220px]">
                 <div class="flex justify-between text-sm text-[#7a8fa0] mb-1.5">
