@@ -58,21 +58,28 @@
                 <div class="flex items-center gap-2.5 flex-wrap">
                     <span class="text-xs tracking-[2px] uppercase text-[#7a8fa0]">Show</span>
                     <div class="flex gap-1 flex-wrap">
+                        <button wire:click="$set('filterRecommendation', [])"
+                                class="px-3 py-1 border rounded-full text-xs font-semibold tracking-wide uppercase cursor-pointer transition-all duration-150
+                                {{ count($filterRecommendation) === 0
+                                    ? 'bg-[#1a2535] border-[#3a4f60] text-[#d0ccbc]'
+                                    : 'border-[#2a3545] text-[#7a8fa0] hover:border-[#3a4f60] hover:text-[#9aaabb]' }}">
+                            All
+                        </button>
                         @foreach([
-                            ['all', 'All', ''],
                             ['must', 'Must Watch', 'must'],
                             ['highly_recommended', 'Highly Rec.', 'hrec'],
                             ['recommended', 'Recommended', 'rec'],
                             ['skip', 'Could Skip', 'skip'],
                         ] as [$val, $label, $type])
-                            <button wire:click="$set('filterRecommendation', '{{ $val }}')"
+                            @php $active = in_array($val, $filterRecommendation); @endphp
+                            <button wire:click="toggleFilter('{{ $val }}')"
                                     class="px-3 py-1 border rounded-full text-xs font-semibold tracking-wide uppercase cursor-pointer transition-all duration-150
-                                    {{ $filterRecommendation === $val
+                                    {{ $active
                                         ? ($type === 'must'  ? 'bg-[#2a1f08] border-[#c9a227] text-[#c9a227]'
                                         : ($type === 'hrec'  ? 'bg-[#1f1a35] border-[#9b6dff] text-[#9b6dff]'
                                         : ($type === 'rec'   ? 'bg-[#0a1f2a] border-[#4a9eca] text-[#4a9eca]'
                                         : ($type === 'skip'  ? 'bg-[#1a1f25] border-[#556070] text-[#9aaabb]'
-                                        : 'bg-[#1a2535] border-[#3a4f60] text-[#d0ccbc]'))))
+                                        :                     'bg-[#1a2535] border-[#3a4f60] text-[#d0ccbc]'))))
                                         : 'border-[#2a3545] text-[#7a8fa0] hover:border-[#3a4f60] hover:text-[#9aaabb]' }}">
                                 {{ $label }}
                             </button>
