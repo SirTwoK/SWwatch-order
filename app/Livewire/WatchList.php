@@ -11,15 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class WatchList extends Component
 {
-
-    
     public string $filterEra           = 'all';
     #[\Livewire\Attributes\Url]
-    public string $filterRecommendation = 'all';
+    public array $filterRecommendation = [];
     
     #[\Livewire\Attributes\Url]
     public bool $hideWatched = false;
-    public ?int   $expandedId           = null;
+    public ?int   $expandedId  = null;
 
 
     public bool $showGreatnessWarning = false;
@@ -62,16 +60,22 @@ class WatchList extends Component
         $state->save();
     }
 
-    private function getUserWatched(int $entryId): bool
+    // function for filtering the entries
+    public function toggleFilter(string $value): void
     {
-        $userId = Auth::id();
-        $state = DB::table('user_watch_states')
-            ->where('watch_entry_id', $entryId)
-            ->where('user_id', $userId)
-            ->first();
-        return $state ? (bool) $state->watched : false;
+        if (in_array($value, $this->filterRecommendation)) 
+        {
+            $this->filterRecommendation = array_values(
+                array_filter($this->filterRecommendation, fn($v) => $v !== $value)
+            );
+        } 
+        else 
+        {
+            $this->filterRecommendation[] = $value;
+        }
     }
 
+    // helper functions for greatness
     public function dismissGreatness(): void
     {
         $this->showGreatnessWarning = false;
@@ -102,8 +106,8 @@ class WatchList extends Component
                 $join->on('watch_entries.id', '=', 'uws.watch_entry_id')
                     ->where('uws.user_id', $userId);
             })
-            ->when($this->filterRecommendation !== 'all',
-                fn($q) => $q->where('recommendation', $this->filterRecommendation))
+            ->when(count($this->filterRecommendation) > 0,
+                fn($q) => $q->whereIn('recommendation', $this->filterRecommendation))
             ->select('watch_entries.*', 'uws.watched as user_watched')
             ->get()
             ->map(function ($entry) {
