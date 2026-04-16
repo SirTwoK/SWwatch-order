@@ -1,30 +1,72 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Star Wars Watchlist') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <canvas id="starfield"></canvas>
+    <div class="content-fade content-fade-left"></div>
+    <div class="content-fade content-fade-right"></div>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <div id="app-content">
+        {{ $slot }}
+    </div>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/" wire:navigate>
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <script>
+        (function () {
+            const canvas = document.getElementById('starfield');
+            const ctx = canvas.getContext('2d');
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
-        </div>
-    </body>
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                draw();
+            }
+
+            function draw() {
+                const w = canvas.width;
+                const h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = '#06080c';
+                ctx.fillRect(0, 0, w, h);
+
+                for (let i = 0; i < 320; i++) {
+                    const x = Math.random() * w;
+                    const y = Math.random() * h;
+                    const r = Math.random() * 1.1 + 0.2;
+                    const alpha = 0.25 + Math.random() * 0.55;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                    ctx.fill();
+                }
+
+                for (let i = 0; i < 60; i++) {
+                    const onLeft = Math.random() < 0.5;
+                    const x = onLeft
+                        ? Math.random() * w * 0.28
+                        : w * 0.72 + Math.random() * w * 0.28;
+                    const y = Math.random() * h;
+                    const r = Math.random() * 1.6 + 0.4;
+                    const alpha = 0.5 + Math.random() * 0.5;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                    ctx.fill();
+                }
+            }
+
+            resize();
+            window.addEventListener('resize', resize);
+        })();
+    </script>
+
+</body>
 </html>

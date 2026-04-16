@@ -121,9 +121,11 @@
 
             <div class="flex items-center gap-3 flex-wrap">
                 <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-[#7a8fa0]">
-                    <input type="checkbox" wire:model.live="hideWatched" class="hidden peer">
-                    <div class="w-8 h-[18px] bg-[#2a3545] border border-[#3a4f60] rounded-full relative transition-colors duration-200 peer-checked:bg-[#2a1f08] peer-checked:border-[#c9a227]">
-                        <div class="w-3 h-3 bg-[#7a8fa0] rounded-full absolute top-[2px] left-[2px] transition-all duration-200 peer-checked:left-[18px] peer-checked:bg-[#c9a227]"></div>
+                    <input type="checkbox" wire:model.live="hideWatched" class="sr-only">
+                    <div class="relative w-8 h-[18px] rounded-full border transition-colors duration-200 flex items-center px-[3px]
+                                {{ $hideWatched ? 'bg-[#2a1f08] border-[#c9a227]' : 'bg-[#2a3545] border-[#2a3545]' }}">
+                        <div class="w-3 h-3 rounded-full transition-all duration-200
+                                    {{ $hideWatched ? 'bg-[#c9a227] ml-[14px]' : 'bg-[#7a8fa0]' }}"></div>
                     </div>
                     <span>Hide watched</span>
                 </label>
@@ -435,4 +437,5 @@
             @endforelse
         </div>
     </div>
+    
 </div>
