@@ -447,4 +447,50 @@
             @endforelse
         </div>
     </div>
+    @if($showGreatnessWarning)
+    <div class="fixed inset-0 z-50 flex items-center justify-center px-4"
+         style="background: rgba(6,8,12,0.85);">
+        <div class="border border-[#c9a227] rounded-lg overflow-hidden max-w-md w-full"
+             style="background: rgba(10,12,18,0.98);">
+
+            <div class="px-6 pt-6 pb-4 border-b border-[#2a3545] text-center">
+                <div class="text-3xl mb-3">⚠</div>
+                <h2 class="font-['Exo_2'] text-lg font-extrabold tracking-[3px] uppercase text-[#c9a227]">
+                    You dare?
+                </h2>
+            </div>
+
+            <div class="px-6 py-6 text-center">
+                <p class="text-[#9aaabb] leading-relaxed mb-1">
+                    You have not yet witnessed
+                </p>
+                <p class="font-['Exo_2'] text-[#f0ece0] font-bold tracking-wide mb-1">
+                    The Siege of Mandalore.
+                </p>
+                <p class="text-[#9aaabb] leading-relaxed mb-4">
+                    You do not get to move on.<br>
+                    No one moves on until they have watched greatness.
+                </p>
+                <p class="text-xs tracking-[2px] uppercase text-[#556070] italic mb-6">
+                    — Orders 141 through 144. Non-negotiable.
+                </p>
+
+                <div class="flex flex-col gap-3">
+                    <button wire:click="dismissGreatness"
+                            class="w-full py-2.5 border border-[#c9a227] rounded text-sm font-bold tracking-[3px] uppercase
+                                   text-[#c9a227] bg-transparent hover:bg-[#c9a227] hover:text-[#06080c]
+                                   transition-all duration-200 cursor-pointer">
+                        Fine. I will watch them first.
+                    </button>
+                    {{-- <button wire:click="dismissGreatness"
+                            class="w-full py-2.5 border border-[#2a3545] rounded text-sm font-semibold tracking-[2px] uppercase
+                                   text-[#556070] bg-transparent hover:border-[#3a4f60] hover:text-[#7a8fa0]
+                                   transition-all duration-200 cursor-pointer">
+                        I lied, I already watched them
+                    </button> --}}
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 </div>
