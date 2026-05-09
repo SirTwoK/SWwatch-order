@@ -240,7 +240,7 @@
                                             <div class="flex-1 h-px bg-[#2a3545]"></div>
                                         </div>
                                         @if($entry->before_watch)
-                                            <p class="text-xs text-[#7a8fa0] leading-relaxed">{{ $entry->before_watch }}</p>
+                                            <p class="text-xs text-[#7a8fa0] leading-relaxed">{!! \App\Helpers\GlossaryParser::parse($entry->before_watch, $furthestOrder) !!}</p>
                                         @else
                                             <p class="text-xs text-[#445060] leading-relaxed italic">Context and things to remember coming soon.</p>
                                         @endif
@@ -253,7 +253,7 @@
                                                 <span class="text-[10px] tracking-[2px] uppercase text-[#556070]">spoilers</span>
                                             </div>
                                             @if($entry->after_watch)
-                                                <p class="text-xs text-[#7a8fa0] leading-relaxed">{{ $entry->after_watch }}</p>
+                                                <p class="text-xs text-[#7a8fa0] leading-relaxed">{!! \App\Helpers\GlossaryParser::parse($entry->after_watch, $furthestOrder) !!}</p>
                                             @else
                                                 <p class="text-xs text-[#445060] leading-relaxed italic">Spoiler breakdown and notes coming soon.</p>
                                             @endif
@@ -413,7 +413,7 @@
                                                         <div class="flex-1 h-px bg-[#2a3545]"></div>
                                                     </div>
                                                     @if($entry->before_watch)
-                                                        <p class="text-xs text-[#7a8fa0] leading-relaxed">{{ $entry->before_watch }}</p>
+                                                        <p class="text-xs text-[#7a8fa0] leading-relaxed">{!! \App\Helpers\GlossaryParser::parse($entry->before_watch, $furthestOrder) !!}</p>
                                                     @else
                                                         <p class="text-xs text-[#445060] leading-relaxed italic">Context and things to remember coming soon.</p>
                                                     @endif
@@ -426,7 +426,7 @@
                                                             <span class="text-[10px] tracking-[2px] uppercase text-[#556070]">spoilers</span>
                                                         </div>
                                                         @if($entry->after_watch)
-                                                            <p class="text-xs text-[#7a8fa0] leading-relaxed">{{ $entry->after_watch }}</p>
+                                                            <p class="text-xs text-[#7a8fa0] leading-relaxed">{!! \App\Helpers\GlossaryParser::parse($entry->after_watch, $furthestOrder) !!}</p>
                                                         @else
                                                             <p class="text-xs text-[#445060] leading-relaxed italic">Spoiler breakdown and notes coming soon.</p>
                                                         @endif

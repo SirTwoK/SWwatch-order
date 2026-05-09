@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\UserWatchState;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
 
 
 class WatchList extends Component
@@ -175,21 +176,28 @@ class WatchList extends Component
 
     
     // stats + watched logic
+    #[Computed]
     public function stats()
     {
         $userId = Auth::id();
-
-        $total = WatchEntry::count();
-
-        $watched = DB::table('user_watch_states')
-            ->where('user_id', $userId)
-            ->where('watched', true)
-            ->count();
+        $total   = WatchEntry::count();
+        $watched = WatchEntry::join('user_watch_states as uws', function ($join) use ($userId) {
+                $join->on('watch_entries.id', '=', 'uws.watch_entry_id')
+                     ->where('uws.user_id', $userId)
+                     ->where('uws.watched', true);
+            })->count();
+        
+        $furthestOrder = WatchEntry::join('user_watch_states as uws', function ($join) use ($userId) {
+                $join->on('watch_entries.id', '=', 'uws.watch_entry_id')
+                     ->where('uws.user_id', $userId)
+                     ->where('uws.watched', true);
+            })->max('watch_entries.order') ?? 0;
 
         return [
-            'total'   => $total,
-            'watched' => $watched,
-            'percent' => $total > 0 ? round(($watched/$total)*100) : 0,
+            'total'          => $total,
+            'watched'        => $watched,
+            'percent'        => $total > 0 ? round(($watched / $total) * 100) : 0,
+            'furthest_order' => $furthestOrder,
         ];
     }
 
@@ -234,6 +242,7 @@ class WatchList extends Component
             'Tales of the Jedi'      => '/images/talesjedi3.jpg',
             'Tales of the Empire'    => '/images/talesempire.jpg',
             'Tales of the Underworld'=> '/images/tales-of-the-underworld.jpg',
+            'Maul: Shadow Lord'      => '/images/maul-banner.png',  
             default                  => null,
         };
     }
@@ -250,6 +259,7 @@ class WatchList extends Component
             'Tales of the Jedi'      => 'right 58%',
             'Tales of the Empire'    => 'right 34%',
             'Tales of the Underworld'=> 'right 12%',
+            'Maul: Shadow Lord'      => 'right 38%', 
             default                  => null,
         };
     }
@@ -274,6 +284,7 @@ class WatchList extends Component
             'expandedId'           => $this->expandedId,
             'expandedGroups'       => $this->expandedGroups,
             'legendOpen'           => $this->legendOpen,
+            'furthestOrder' => $this->stats['furthest_order'],
         ]);
     }
 }
