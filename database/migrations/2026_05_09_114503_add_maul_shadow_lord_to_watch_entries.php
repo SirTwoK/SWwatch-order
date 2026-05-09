@@ -34,16 +34,16 @@ return new class extends Migration
 
         // Insert Maul episodes
         $episodes = [
-            [1,  'Chapter 1: The Dark Revenge'],
-            [2,  'Chapter 2: Sinister Schemes'],
-            [3,  'Chapter 3: Whispers in the Unknown'],
-            [4,  'Chapter 4: Pride and Vengeance'],
-            [5,  'Chapter 5: Inquisition'],
-            [6,  'Chapter 6: Night of the Hunted'],
-            [7,  'Chapter 7: Call to Oblivion'],
-            [8,  'Chapter 8: The Creeping Fear'],
-            [9,  'Chapter 9: Strange Allies'],
-            [10, 'Chapter 10: The Dark Lord'],
+            [1,  'The Dark Revenge'],
+            [2,  'Sinister Schemes'],
+            [3,  'Whispers in the Unknown'],
+            [4,  'Pride and Vengeance'],
+            [5,  'Inquisition'],
+            [6,  'Night of the Hunted'],
+            [7,  'Call to Oblivion'],
+            [8,  'The Creeping Fear'],
+            [9,  'Strange Allies'],
+            [10, 'The Dark Lord'],
         ];
 
         foreach ($episodes as [$ep, $title]) {
