@@ -242,6 +242,7 @@ class WatchList extends Component
             'Tales of the Jedi'      => '/images/talesjedi3.jpg',
             'Tales of the Empire'    => '/images/talesempire.jpg',
             'Tales of the Underworld'=> '/images/tales-of-the-underworld.jpg',
+            'Maul: Shadow Lord'      => '/images/maul-banner.png',  
             default                  => null,
         };
     }
@@ -258,6 +259,7 @@ class WatchList extends Component
             'Tales of the Jedi'      => 'right 58%',
             'Tales of the Empire'    => 'right 34%',
             'Tales of the Underworld'=> 'right 12%',
+            'Maul: Shadow Lord'      => 'right 38%', 
             default                  => null,
         };
     }
