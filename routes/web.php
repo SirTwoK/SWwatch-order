@@ -22,21 +22,15 @@ Route::get('/auth/google/callback', function () {
     );
 
 
-\Log::info('User before login', [
-    'id' => $user->id,
-    'remember_token' => $user->remember_token,
-]);
-
     Auth::guard('web')->login($user, true);
-
-    \Log::info('User after login', [
-        'id' => $user->id,
-        'remember_token' => $user->remember_token,
-    ]);
 
    // request()->session()->regenerate();
 
     return redirect()->route('dashboard');
+});
+
+Route::get('/admin/login', function () {
+    return redirect('/login');
 });
 
 Route::post('/logout', function () {
